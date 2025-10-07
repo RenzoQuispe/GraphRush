@@ -1,1 +1,1 @@
-# GraphGames
+# GraphRush
