@@ -1,6 +1,5 @@
 // pantalla de Game Over reutilizable
 
-import React from 'react';
 import { RotateCcw, Home } from 'lucide-react';
 import { Button } from '../ui/Button';
 

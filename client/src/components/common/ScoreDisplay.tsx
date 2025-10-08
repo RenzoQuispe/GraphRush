@@ -1,6 +1,5 @@
 // display de puntuación reutilizable
 
-import React from 'react';
 import { Trophy, Star } from 'lucide-react';
 
 export interface ScoreDisplayProps {

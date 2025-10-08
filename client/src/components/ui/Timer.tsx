@@ -1,6 +1,5 @@
 // Componente de temporizador visual reutilizable
 
-import React from 'react';
 import { Clock } from 'lucide-react';
 
 export interface TimerProps {
@@ -22,7 +21,6 @@ export function Timer({
 }: TimerProps) {
   const isCritical = timeRemaining <= criticalThreshold;
   const isWarning = timeRemaining <= warningThreshold && !isCritical;
-  const isNormal = !isWarning && !isCritical;
 
   const sizeClasses = {
     sm: 'text-xl',
