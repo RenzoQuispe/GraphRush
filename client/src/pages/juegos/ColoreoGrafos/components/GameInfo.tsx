@@ -9,10 +9,10 @@ export interface GameInfoProps {
 
 export function GameInfo({ className = '' }: GameInfoProps) {
   return (
-    <div className={`bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30 ${className}`}>
+    <div className={`bg-slate-800/50 backdrop-blur-sm rounded-2xl p-6 border ${className}`}>
       <div className="flex items-center gap-2 mb-3">
-        <Info className="w-5 h-5 text-purple-400" />
-        <h3 className="text-lg font-bold text-purple-400">Instrucciones</h3>
+        <Info className="w-5 h-5" />
+        <h3 className="text-lg font-bold">Instrucciones</h3>
       </div>
 
       <ul className="text-sm text-slate-300 space-y-2">
@@ -38,7 +38,7 @@ export function GameInfo({ className = '' }: GameInfoProps) {
         </li>
         <li className="flex items-start gap-2">
           <span className="text-red-400 font-bold">•</span>
-          <span>Limpiar el progreso de coloreo del grafo actual hace que pierdas tu combo actual</span>
+          <span>Limpiar el progreso de coloreo del grafo actual hace que pierdas tu combo</span>
         </li>
       </ul>
 
@@ -51,7 +51,7 @@ export function GameInfo({ className = '' }: GameInfoProps) {
           </li>
           <li className="flex items-start gap-2" >
             <span className="text-yellow-400">•</span>
-            <span className='text-xs'>Usa las flechas o WASD para navegar cambiar más rápido el color seleccionado.</span>
+            <span className='text-xs'>Usa las flechas o W-A-S-D del teclado para navegar cambiar más rápido el color seleccionado.</span>
           </li>
         </ul>
       </div>
