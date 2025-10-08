@@ -12,7 +12,7 @@ export const COLORS = {
   ],
   GRAPH: {
     NODE_DEFAULT: '#1e293b',
-    NODE_STROKE: '#8b5cf6',
+    NODE_STROKE: '#f5f5f5',
     NODE_STROKE_HOVER: '#fbbf24',
     EDGE_DEFAULT: '#475569',
     EDGE_HIGHLIGHT: '#a78bfa',
