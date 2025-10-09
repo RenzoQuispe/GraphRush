@@ -121,3 +121,44 @@ export function getNodeNeighbors(nodeId: string, edges: BaseEdge[]): string[] {
 
   return neighbors;
 }
+
+// calcula el número cromático exacto de un grafo mediante backtracking
+export function getNumeroCromaticoExacto(graph: BaseGraph): number {
+  const nodes = graph.nodes.map(n => n.id);
+  const edges = graph.edges;
+  const n = nodes.length;
+  // mapa rápido de vecinos
+  const neighbors = new Map<string, string[]>();
+  nodes.forEach(id => neighbors.set(id, getNodeNeighbors(id, edges)));
+  // asignación de colores (índice de color o null)
+  const colors = new Map<string, number>();
+  let best = n; // peor caso: todos los vértices distintos
+  function canColor(nodeId: string, color: number): boolean {
+    const adj = neighbors.get(nodeId)!;
+    return adj.every(nid => colors.get(nid) !== color);
+  }
+  function backtrack(index: number, usedColors: number) {
+    // poda: si ya usamos más colores que el mejor encontrado
+    if (usedColors >= best) return;
+    if (index === n) {
+      // todos coloreados -> actualizar mejor resultado
+      best = Math.min(best, usedColors);
+      return;
+    }
+    const nodeId = nodes[index];
+    // intentar colores existentes primero
+    for (let c = 0; c < usedColors; c++) {
+      if (canColor(nodeId, c)) {
+        colors.set(nodeId, c);
+        backtrack(index + 1, usedColors);
+        colors.delete(nodeId);
+      }
+    }
+    // probar un nuevo color
+    colors.set(nodeId, usedColors);
+    backtrack(index + 1, usedColors + 1);
+    colors.delete(nodeId);
+  }
+  backtrack(0, 0);
+  return best;
+}

@@ -9,6 +9,7 @@ import {
   getNodeNeighbors,
   getMaxDegree,
   DEFAULT_DIMENSIONS,
+  getNumeroCromaticoExacto,
 } from '../../../../utils/graph/graphGenerator';
 import type { BaseGraph } from '../../../../types/graph.types';
 
@@ -37,7 +38,11 @@ export function useGraphGenerator() {
     // calcular límite de colores basado en el grado máximo
     const baseGraph: BaseGraph = { nodes: baseNodes, edges };
     const maxDegree = getMaxDegree(baseGraph);
-    const colorLimit = Math.min(Math.max(3, maxDegree + 1), config.colorLimit);
+    const numeroCromatico = getNumeroCromaticoExacto(baseGraph);
+    // interpolación inversa: a mayor nivel, menos colores
+    const levelMax = 50;
+    const factor = (levelMax - level) / (levelMax - 1);
+    const colorLimit = Math.round(numeroCromatico + (maxDegree + 1 - numeroCromatico) * factor);
     return { graph, colorLimit };
   }, []);
   return { generateGraph };

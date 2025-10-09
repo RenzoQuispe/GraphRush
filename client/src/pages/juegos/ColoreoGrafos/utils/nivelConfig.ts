@@ -26,7 +26,7 @@ export function getLevelConfig(level: number): LevelConfig {
     minNodes: baseNodes,
     maxNodes: baseNodes + nodeVariation,
     edgeProbability: Math.min(0.3 + level * 0.02, 0.6),
-    colorLimit: Math.min(3 + Math.floor(level / 5), 5),
+    colorLimit: 0, // se calcula en utils/graph/graphGenerator.ts
   };
 }
 
