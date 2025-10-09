@@ -33,7 +33,7 @@ export function GameHeader({
 
         <div className="flex gap-6 items-center">
           {
-            timeRemaining > 0 && timeRemaining < 60 && (
+            timeRemaining > 0 && timeRemaining != 60 && (
               <div className="text-center">
                 <div className="text-sm text-slate-300 flex items-center justify-center gap-1 font-bold">
                   <Target className="w-4 h-4" />
@@ -44,7 +44,7 @@ export function GameHeader({
             )
           }
           {
-            timeRemaining > 0 && timeRemaining < 60 && (
+            timeRemaining > 0 && timeRemaining != 60 && (
               <ScoreDisplay score={score} label="Puntos" color="text-white" className='font-bold' />
             )
           }
@@ -56,12 +56,16 @@ export function GameHeader({
             color="text-yellow-400"
             className='font-bold'
           />
-
-          <Timer timeRemaining={timeRemaining} className='font-bold' />
+          {
+            timeRemaining > 0 && timeRemaining != 60 && (
+              <Timer timeRemaining={timeRemaining} className='font-bold' />
+            )
+          }
+          
         </div>
       </div>
 
-      {combo > 0 && (
+      {combo > 0 && timeRemaining > 0 && (
         <div className="mt-4 text-center">
           <div className="inline-flex items-center gap-2 bg-orange-500/30 px-4 py-2 rounded-full animate-pulse border border-orange-400/50">
             <Zap className="w-5 h-5 text-orange-400" />

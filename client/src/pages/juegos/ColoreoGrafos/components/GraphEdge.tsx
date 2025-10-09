@@ -12,6 +12,10 @@ export interface GraphEdgeProps {
 }
 
 export function GraphEdge({ edge, fromNode, toNode, isHighlighted }: GraphEdgeProps) {
+
+  const _useEdge = (e: unknown) => e; // funcion dummy momentanea para evitar warning de variable no usada
+  _useEdge(edge);
+
   const strokeColor = isHighlighted ? COLORS.GRAPH.EDGE_HIGHLIGHT : COLORS.GRAPH.EDGE_DEFAULT;
   const strokeWidth = isHighlighted ? 4 : 2;
 
