@@ -14,8 +14,8 @@ export const COLORS = {
     NODE_DEFAULT: '#1e293b',
     NODE_STROKE: '#f5f5f5',
     NODE_STROKE_HOVER: '#fbbf24',
-    EDGE_DEFAULT: '#475569',
-    EDGE_HIGHLIGHT: '#a78bfa',
+    EDGE_DEFAULT: '#636e80ff',
+    EDGE_HIGHLIGHT: '#9c7cfbff',
   }
 };
 

@@ -29,7 +29,7 @@ export function ScoreDisplay({
 
   return (
     <div className={`text-center ${className}`}>
-      <div className={`${sizeClasses[size].label} text-slate-400`}>{label}</div>
+      <div className={`${sizeClasses[size].label} text-slate-300`}>{label}</div>
       <div className={`${sizeClasses[size].text} font-bold ${color} flex items-center justify-center gap-1`}>
         {IconComponent && <IconComponent className={sizeClasses[size].icon} />}
         {score.toLocaleString()}
