@@ -51,7 +51,7 @@ export function GameInfo({ className = '' }: GameInfoProps) {
           </li>
           <li className="flex items-start gap-2" >
             <span className="text-yellow-400">•</span>
-            <span className='text-xs'>Usa las flechas o W-A-S-D del teclado para navegar cambiar más rápido el color seleccionado.</span>
+            <span className='text-xs'>Usa las teclas W-A-S-D cambiar más rápido el color seleccionado.</span>
           </li>
         </ul>
       </div>
