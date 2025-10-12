@@ -35,6 +35,7 @@ export default function ColoreoGrafosGame() {
           highScore={gameState.highScore}
           timeRemaining={gameState.timeRemaining}
           combo={gameState.combo}
+          isPlaying={gameState.isPlaying}
         />
       </div>
       

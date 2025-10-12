@@ -1,6 +1,6 @@
 // Lógica principal del juego de coloreo de grafos
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback} from 'react';
 import type { ColorGameState, Particle } from '../types';
 import { useGraphGenerator } from './useGraphGenerator';
 import { GAME_CONFIG, calculatePoints } from '../utils/nivelConfig';
@@ -18,7 +18,7 @@ export function useGraphGame() {
   const [gameState, setGameState] = useState<ColorGameState>(() => {
     const { graph, colorLimit } = generateGraph(1);
     return {
-      timeRemaining: GAME_CONFIG.initialTime,
+      timeRemaining: GAME_CONFIG.initialTime * 1000,
       isPlaying: false,
       isPaused: false,
       isGameOver: false,
@@ -36,12 +36,20 @@ export function useGraphGame() {
 
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [particles, setParticles] = useState<Particle[]>([]);
+  const [lastWarningSecond, setLastWarningSecond] = useState<number>(-1);
 
-  // configuración del temporizador
+  // timer configuration
   const timer = useTimer({
     initialTime: GAME_CONFIG.initialTime,
-    onTick: (time) => {
-      setGameState(prev => ({ ...prev, timeRemaining: time }));
+    onTick: (timeMs) => {
+      setGameState(prev => ({ ...prev, timeRemaining: timeMs }));
+      
+      // reproducir tick cada segundo en los últimos 10 segundos
+      const currentSecond = Math.floor(timeMs / 1000);
+      if (currentSecond <= 10 && currentSecond > 0 && currentSecond !== lastWarningSecond) {
+        setLastWarningSecond(currentSecond);
+        playSound('tick');
+      }
     },
     onTimeUp: () => {
       playSound('gameover');
@@ -55,6 +63,7 @@ export function useGraphGame() {
           isGameOver: true,
           isPlaying: false,
           highScore: newHighScore,
+          timeRemaining: 0,
         };
       });
     },
@@ -62,17 +71,13 @@ export function useGraphGame() {
       playSound('warning');
     },
     warningThreshold: 10,
+    updateInterval: 10, // actualizar cada 10ms
   });
-
-  // sincronizar timer con gameState
-  useEffect(() => {
-    setGameState(prev => ({ ...prev, timeRemaining: timer.timeRemaining }));
-  }, [timer.timeRemaining]);
 
   const startGame = useCallback(() => {
     const { graph, colorLimit } = generateGraph(1);
     setGameState({
-      timeRemaining: GAME_CONFIG.initialTime,
+      timeRemaining: GAME_CONFIG.initialTime * 1000,
       isPlaying: true,
       isPaused: false,
       isGameOver: false,
@@ -86,6 +91,7 @@ export function useGraphGame() {
       showSuccess: false,
       highScore,
     });
+    setLastWarningSecond(-1);
     timer.start();
   }, [generateGraph, timer, highScore]);
 

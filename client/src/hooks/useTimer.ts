@@ -4,14 +4,16 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 
 export interface UseTimerConfig {
   initialTime: number;
-  onTick?: (timeRemaining: number) => void;
+  onTick?: (timeRemaining: number) => void; // timeRemaining en milisegundos
   onTimeUp?: () => void;
   onWarning?: (timeRemaining: number) => void;
   warningThreshold?: number;
+  updateInterval?: number;
 }
 
 export interface UseTimerReturn {
   timeRemaining: number;
+  timeRemainingSeconds: number;
   isRunning: boolean;
   isPaused: boolean;
   start: () => void;
@@ -29,19 +31,28 @@ export function useTimer(config: UseTimerConfig): UseTimerReturn {
     onTimeUp,
     onWarning,
     warningThreshold = 10,
+    updateInterval = 10,
   } = config;
 
-  const [timeRemaining, setTimeRemaining] = useState(initialTime);
+  const usarVariable = (e: unknown) => e; // funcion dummy momentanea para evitar warning de variable no usada
+  usarVariable(updateInterval);
+
+  const initialTimeMs = initialTime * 1000;
+  const warningThresholdMs = warningThreshold * 1000;
+
+  const [timeRemaining, setTimeRemaining] = useState(initialTimeMs);
   const [isRunning, setIsRunning] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const lastTickRef = useRef<number>(0);
+  const targetTimeRef = useRef<number>(0);
   const warningFiredRef = useRef(false);
 
   const stop = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
     }
     setIsRunning(false);
     setIsPaused(false);
@@ -49,82 +60,96 @@ export function useTimer(config: UseTimerConfig): UseTimerReturn {
 
   const start = useCallback(() => {
     stop();
-    setTimeRemaining(initialTime);
+    const now = performance.now();
+    targetTimeRef.current = now + initialTimeMs;
+    lastTickRef.current = now;
+    setTimeRemaining(initialTimeMs);
     setIsRunning(true);
     setIsPaused(false);
     warningFiredRef.current = false;
-  }, [initialTime, stop]);
+  }, [initialTimeMs, stop]);
 
   const pause = useCallback(() => {
     setIsPaused(true);
   }, []);
 
   const resume = useCallback(() => {
+    const now = performance.now();
+    const remaining = timeRemaining;
+    targetTimeRef.current = now + remaining;
+    lastTickRef.current = now;
     setIsPaused(false);
-  }, []);
+  }, [timeRemaining]);
 
   const reset = useCallback((newTime?: number) => {
     stop();
-    const resetTime = newTime ?? initialTime;
+    const resetTime = (newTime ?? initialTime) * 1000;
     setTimeRemaining(resetTime);
     warningFiredRef.current = false;
   }, [initialTime, stop]);
 
   const addTime = useCallback((seconds: number) => {
-    setTimeRemaining(prev => Math.max(0, prev + seconds));
+    const addMs = seconds * 1000;
+    targetTimeRef.current += addMs;
+    setTimeRemaining(prev => prev + addMs);
   }, []);
 
   useEffect(() => {
     if (!isRunning || isPaused) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
       }
       return;
     }
 
-    intervalRef.current = setInterval(() => {
-      setTimeRemaining(prev => {
-        const newTime = prev - 1;
-        // callback de tick
-        if (onTick) {
-          onTick(newTime);
+    const animate = (currentTime: number) => {
+      const remaining = targetTimeRef.current - currentTime;
+      const newTime = Math.max(0, remaining);
+
+      setTimeRemaining(newTime);
+
+      // Callback de tick
+      if (onTick) {
+        onTick(newTime);
+      }
+
+      // Warning
+      if (
+        onWarning &&
+        !warningFiredRef.current &&
+        newTime <= warningThresholdMs &&
+        newTime > 0
+      ) {
+        warningFiredRef.current = true;
+        onWarning(newTime);
+      }
+
+      // Tiempo agotado
+      if (newTime <= 0) {
+        setIsRunning(false);
+        if (onTimeUp) {
+          onTimeUp();
         }
-        // advertencia
-        if (
-          onWarning &&
-          !warningFiredRef.current &&
-          newTime <= warningThreshold &&
-          newTime > 0
-        ) {
-          warningFiredRef.current = true;
-          onWarning(newTime);
-        }
-        // tiempo agotado
-        if (newTime <= 0) {
-          if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-          }
-          setIsRunning(false);
-          if (onTimeUp) {
-            onTimeUp();
-          }
-          return 0;
-        }
-        return newTime;
-      });
-    }, 1000);
+        return;
+      }
+
+      // Continuar animación
+      animationFrameRef.current = requestAnimationFrame(animate);
+    };
+
+    animationFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [isRunning, isPaused, onTick, onTimeUp, onWarning, warningThreshold]);
+  }, [isRunning, isPaused, onTick, onTimeUp, onWarning, warningThresholdMs]);
 
   return {
     timeRemaining,
+    timeRemainingSeconds: timeRemaining / 1000,
     isRunning,
     isPaused,
     start,
