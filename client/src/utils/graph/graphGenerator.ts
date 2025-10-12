@@ -14,7 +14,7 @@ export const DEFAULT_DIMENSIONS: GraphDimensions = {
   height: 600,
   centerX: 400,
   centerY: 300,
-  radius: 180,
+  radius: 210,
 };
 
 // Genera nodos en disposición circular

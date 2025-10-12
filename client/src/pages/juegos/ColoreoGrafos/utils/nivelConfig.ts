@@ -4,7 +4,7 @@ import type { ColorGameConfig } from '../types/index.ts';
 
 export const GAME_CONFIG: ColorGameConfig = {
   initialTime: 60,
-  timeBonus: 3,
+  timeBonus: 1,
   pointsPerGraph: 100,
   comboMultiplier: 1.5,
   maxColors: 8,
@@ -20,11 +20,11 @@ export interface LevelConfig {
 // calcula la configuración del nivel basado en el número de nivel
 export function getLevelConfig(level: number): LevelConfig {
   // aumentamos gradualmente la complejidad
-  const baseNodes = Math.min(4 + Math.floor(level / 2), 12);
-  const nodeVariation = Math.min(Math.floor(level / 3), 3);
+  const baseNodes = Math.min(4 + Math.floor(level / 2), 8);
+  const nodeVariation = Math.min(Math.floor(level / 3), 2);
   return {
     minNodes: baseNodes,
-    maxNodes: baseNodes + nodeVariation,
+    maxNodes: Math.min(baseNodes + nodeVariation, 8),
     edgeProbability: Math.min(0.3 + level * 0.02, 0.6),
     colorLimit: 0, // se calcula en utils/graph/graphGenerator.ts
   };

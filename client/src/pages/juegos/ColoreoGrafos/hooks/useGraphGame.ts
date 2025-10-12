@@ -37,6 +37,7 @@ export function useGraphGame() {
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [particles, setParticles] = useState<Particle[]>([]);
   const [lastWarningSecond, setLastWarningSecond] = useState<number>(-1);
+  const [isProcessingCompletion, setIsProcessingCompletion] = useState(false);
 
   // timer configuration
   const timer = useTimer({
@@ -92,6 +93,7 @@ export function useGraphGame() {
       highScore,
     });
     setLastWarningSecond(-1);
+    setIsProcessingCompletion(false);
     timer.start();
   }, [generateGraph, timer, highScore]);
 
@@ -105,7 +107,7 @@ export function useGraphGame() {
   }, [gameState.isPaused, timer]);
 
   const colorNode = useCallback((nodeId: string) => {
-    if (!gameState.isPlaying || gameState.isPaused || gameState.isGameOver) return;
+    if (!gameState.isPlaying || gameState.isPaused || gameState.isGameOver || isProcessingCompletion) return;
 
     playSound('click');
 
@@ -118,6 +120,7 @@ export function useGraphGame() {
 
       // verificar si el grafo está completamente coloreado y es válido
       if (isValidColoring(newGraph)) {
+        setIsProcessingCompletion(true);
         const node = newNodes.find(n => n.id === nodeId);
         if (node) {
           setParticles(p => [...p, { id: Date.now(), x: node.x, y: node.y }]);
@@ -152,6 +155,7 @@ export function useGraphGame() {
           
           // agregar tiempo bonus
           timer.addTime(GAME_CONFIG.timeBonus);
+          setIsProcessingCompletion(false);
         }, 600);
 
         return prev;
@@ -159,7 +163,7 @@ export function useGraphGame() {
 
       return { ...prev, graph: newGraph };
     });
-  }, [gameState.isPlaying, gameState.isPaused, gameState.isGameOver, playSound, generateGraph, timer]);
+  }, [gameState.isPlaying, gameState.isPaused, gameState.isGameOver, isProcessingCompletion, playSound, generateGraph, timer]);
 
   const resetGraph = useCallback(() => {
     if (!gameState.isPlaying || gameState.isPaused || gameState.isGameOver) return;
@@ -190,5 +194,6 @@ export function useGraphGame() {
     selectColor,
     soundEnabled,
     toggleSound,
+    isProcessingCompletion,
   };
 }

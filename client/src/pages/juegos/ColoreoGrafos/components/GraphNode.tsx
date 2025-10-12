@@ -11,7 +11,7 @@ export interface GraphNodeProps {
 }
 
 export function GraphNode({ node, isHovered, onHover, onClick }: GraphNodeProps) {
-  const radius = isHovered ? 28 : 24;
+  const radius = isHovered ? 38 : 34;
   const strokeColor = isHovered ? COLORS.GRAPH.NODE_STROKE_HOVER : COLORS.GRAPH.NODE_STROKE;
   const strokeWidth = isHovered ? 4 : 3;
 
@@ -38,7 +38,7 @@ export function GraphNode({ node, isHovered, onHover, onClick }: GraphNodeProps)
         textAnchor="middle"
         dominantBaseline="middle"
         fill="white"
-        fontSize="14"
+        fontSize="24"
         fontWeight="bold"
         className="pointer-events-none select-none"
       >

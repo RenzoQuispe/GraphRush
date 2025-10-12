@@ -67,7 +67,7 @@ export function Timer({
       <div className="text-sm text-slate-300 text-center mb-1">Tiempo</div>
       <div className={`${sizeClasses[size]} font-bold ${textColor} flex items-center justify-center gap-2`}>
         {showIcon && <Clock className={size === 'lg' ? 'w-8 h-8' : size === 'md' ? 'w-6 h-6' : 'w-4 h-4'} />}
-        {formattedTime}s
+        {formattedTime}
       </div>
     </div>
   );
