@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # umbral mínimo de líneas cambiadas para hacer deploy
-THRESHOLD=300
+THRESHOLD=150
+echo "Numero minimo de lineas cambiadas en archivos importantes de /client para cancelar el build-deploy: $THRESHOLD"
 # obtener lista de archivos modificados entre el último deploy y el commit actual
 changed_files=$(git diff --name-only $VERCEL_GIT_PREVIOUS_SHA $VERCEL_GIT_COMMIT_SHA)
 # filtrar solo archivos en src/ o public/

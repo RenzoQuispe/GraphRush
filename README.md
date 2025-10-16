@@ -6,6 +6,6 @@ GraphRush is a web application that offers interactive games focused on the math
 
 ## Available Game Modes
 
-### 1. Graph Coloring
+### Graph Coloring
 
-![Graph Coloring](./docs/screenshots/JuegoColorearGrafos1.png)
+![Graph Coloring](./docs/screenshots/JuegoColorearGrafos.png)
