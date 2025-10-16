@@ -4,7 +4,7 @@ import type { ColorGameConfig } from '../types/index.ts';
 
 export const GAME_CONFIG: ColorGameConfig = {
   initialTime: 60,
-  timeBonus: 1,
+  timeBonus: 2,
   pointsPerGraph: 100,
   comboMultiplier: 1.5,
   maxColors: 8,

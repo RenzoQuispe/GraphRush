@@ -5,7 +5,7 @@ import type { ColorGameState, Particle } from '../types';
 import { useGraphGenerator } from './useGraphGenerator';
 import { GAME_CONFIG, calculatePoints, MAX_PAUSES } from '../utils/nivelConfig';
 import { useTimer } from '../../../../hooks/useTimer';
-import { isValidColoring } from '../utils/Algoritmos';
+import { isValidColoring, canColorNode } from '../utils/Algoritmos';
 import { useSound } from '../../../../hooks/useSound';
 import { useLocalStorage } from '../../../../hooks/useLocalStorage';
 import { COLORS, STORAGE_KEYS } from '../../../../utils/constants';
@@ -124,13 +124,28 @@ export function useGraphGame() {
     playSound('click');
 
     setGameState(prev => {
+      const targetNode = prev.graph.nodes.find(n => n.id === nodeId);
+      if (!targetNode) return prev;
+
+      // aplicar el color igual, pase lo que pase
       const newNodes = prev.graph.nodes.map(node =>
         node.id === nodeId ? { ...node, color: prev.selectedColor } : node
       );
-
       const newGraph = { ...prev.graph, nodes: newNodes };
 
-      // verificar si el grafo está completamente coloreado y es válido
+      // después de pintar, verificamos si fue un color inválido
+      const esColorValido = canColorNode(targetNode, prev.selectedColor, prev.graph);
+      let newCombo = prev.combo;
+      let newBestCombo = prev.bestCombo;
+
+      if (!esColorValido) {
+        // Si se coloreó mal, pierde combo pero no bloquea el color
+        playSound('error');
+        console.log(`Color inválido en nodo ${targetNode.id} — combo reiniciado`);
+        newCombo = 0;
+      }
+
+      // si fue válido, mantiene el combo
       if (isValidColoring(newGraph)) {
         setIsProcessingCompletion(true);
         const node = newNodes.find(n => n.id === nodeId);
@@ -141,19 +156,17 @@ export function useGraphGame() {
 
         playSound('success');
 
-        // calcular puntos con combo
-        const points = calculatePoints(prev.currentLevel, prev.combo);
+        const points = calculatePoints(prev.currentLevel, newCombo);
         const newScore = prev.score + points;
-        const newCombo = prev.combo + 1;
-        const newBestCombo = Math.max(prev.bestCombo, newCombo);
-        console.log(`Grafo completado! Puntos ganados: ${points} | Nuevo puntaje: ${newScore} | Combo actual: x${newCombo} | Mejor combo: x${newBestCombo}`);
+        newCombo += 1;
+        newBestCombo = Math.max(prev.bestCombo, newCombo);
         const newLevel = prev.currentLevel + 1;
 
-        // mostrar animación de éxito
+        console.log(`Grafo completado! Puntos: ${points} | Puntaje: ${newScore} | Combo: x${newCombo} | Mejor Combo: x${newBestCombo}`);
+
         setGameState(prev => ({ ...prev, showSuccess: true }));
         setTimeout(() => setGameState(prev => ({ ...prev, showSuccess: false })), 500);
 
-        // generar siguiente grafo
         setTimeout(() => {
           const { graph: nextGraph, colorLimit: nextColorLimit } = generateGraph(newLevel);
           setGameState(prev => ({
@@ -168,7 +181,6 @@ export function useGraphGame() {
             selectedColor: COLORS.PALETTE[0],
           }));
 
-          // agregar tiempo bonus
           timer.addTime(GAME_CONFIG.timeBonus);
           setIsProcessingCompletion(false);
         }, 600);
@@ -176,8 +188,15 @@ export function useGraphGame() {
         return prev;
       }
 
-      return { ...prev, graph: newGraph };
+      // si aún no está completo el grafo, solo actualizamos el color y combo
+      return {
+        ...prev,
+        graph: newGraph,
+        combo: newCombo,
+        bestCombo: newBestCombo,
+      };
     });
+
   }, [gameState.isPlaying, gameState.isPaused, gameState.isGameOver, isProcessingCompletion, playSound, generateGraph, timer]);
 
   const resetGraph = useCallback(() => {
