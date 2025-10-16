@@ -29,6 +29,7 @@ export function useGraphGame() {
       colorLimit,
       selectedColor: COLORS.PALETTE[0],
       combo: 0,
+      bestCombo: 0,
       showSuccess: false,
       highScore,
       pausesRemaining: MAX_PAUSES,
@@ -90,6 +91,7 @@ export function useGraphGame() {
       colorLimit,
       selectedColor: COLORS.PALETTE[0],
       combo: 0,
+      bestCombo: 0,
       showSuccess: false,
       highScore,
       pausesRemaining: MAX_PAUSES,
@@ -143,6 +145,8 @@ export function useGraphGame() {
         const points = calculatePoints(prev.currentLevel, prev.combo);
         const newScore = prev.score + points;
         const newCombo = prev.combo + 1;
+        const newBestCombo = Math.max(prev.bestCombo, newCombo);
+        console.log(`Grafo completado! Puntos ganados: ${points} | Nuevo puntaje: ${newScore} | Combo actual: x${newCombo} | Mejor combo: x${newBestCombo}`);
         const newLevel = prev.currentLevel + 1;
 
         // mostrar animación de éxito
@@ -160,6 +164,7 @@ export function useGraphGame() {
             score: newScore,
             graphsCompleted: prev.graphsCompleted + 1,
             combo: newCombo,
+            bestCombo: newBestCombo,
             selectedColor: COLORS.PALETTE[0],
           }));
 

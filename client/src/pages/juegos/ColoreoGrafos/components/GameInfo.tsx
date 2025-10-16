@@ -1,7 +1,7 @@
 // panel de información e instrucciones del juego
 
 import { Info } from 'lucide-react';
-import { GAME_CONFIG } from '../utils/nivelConfig';
+import { GAME_CONFIG, MAX_PAUSES } from '../utils/nivelConfig';
 
 export interface GameInfoProps {
   className?: string;
@@ -18,19 +18,19 @@ export function GameInfo({ className = '' }: GameInfoProps) {
       <ul className="text-sm text-slate-300 space-y-2">
         <li className="flex items-start gap-2">
           <span className="text-purple-400 font-bold">•</span>
-          <span>Click en un nodo para colorearlo con el color seleccionado</span>
+          <span>Click en un nodo para colorearlo con el color seleccionado.</span>
         </li>
         <li className="flex items-start gap-2">
           <span className="text-purple-400 font-bold">•</span>
-          <span>Nodos adyacentes NO pueden tener el mismo color</span>
+          <span>Nodos adyacentes NO pueden tener el mismo color.</span>
         </li>
         <li className="flex items-start gap-2">
           <span className="text-purple-400 font-bold">•</span>
-          <span>Completa el grafo correctamente para avanzar de nivel</span>
+          <span>Colorea correctamente todo el grafo para pasar al siguiente grafo.</span>
         </li>
         <li className="flex items-start gap-2">
           <span className="text-green-400 font-bold">•</span>
-          <span>Ganas +{GAME_CONFIG.timeBonus}s por cada grafo completado</span>
+          <span>Ganas +{GAME_CONFIG.timeBonus}s por cada grafo completado.</span>
         </li>
         <li className="flex items-start gap-2">
           <span className="text-orange-400 font-bold">•</span>
@@ -38,7 +38,15 @@ export function GameInfo({ className = '' }: GameInfoProps) {
         </li>
         <li className="flex items-start gap-2">
           <span className="text-red-400 font-bold">•</span>
-          <span>Limpiar el progreso de coloreo del grafo actual hace que pierdas tu combo</span>
+          <span>Puedes pausar el juego solo {MAX_PAUSES} veces por partida.</span>
+        </li>
+        <li className="flex items-start gap-2">
+          <span className="text-red-400 font-bold">•</span>
+          <span>Si limpias el grafo actual, pierdes tu combo acumulado. </span>
+        </li>
+        <li className="flex items-start gap-2">
+          <span className="text-red-400 font-bold">•</span>
+          <span>Colorear un nodo con el mismo color que uno de sus adyacentes también rompe tu combo. </span>
         </li>
       </ul>
 

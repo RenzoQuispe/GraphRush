@@ -24,6 +24,7 @@ export interface ColorGameState {
   colorLimit: number;
   selectedColor: string;
   combo: number;
+  bestCombo: number;
   showSuccess: boolean;
   highScore: number;
   pausesRemaining: number;

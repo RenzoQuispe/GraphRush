@@ -73,7 +73,7 @@ export default function ColoreoGrafosGame() {
                   stats={[
                     { label: 'Nivel Alcanzado', value: gameState.currentLevel },
                     { label: 'Grafos Completados', value: gameState.graphsCompleted },
-                    { label: 'Mejor Combo', value: `x${gameState.combo}` },
+                    { label: 'Mejor Combo', value: `x${gameState.bestCombo}` },
                   ]}
                   onRestart={startGame}
                   title="¡Tiempo Agotado!"
