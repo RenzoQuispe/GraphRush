@@ -26,6 +26,7 @@ export interface ColorGameState {
   combo: number;
   showSuccess: boolean;
   highScore: number;
+  pausesRemaining: number;
 }
 
 export interface Particle {

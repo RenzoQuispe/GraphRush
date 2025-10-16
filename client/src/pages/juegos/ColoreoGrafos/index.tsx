@@ -81,7 +81,7 @@ export default function ColoreoGrafosGame() {
               )}
               
               {/* pantalla de pausa */}
-              {gameState.isPaused && (
+              {gameState.isPaused && gameState.pausesRemaining>-1 && (
                 <div className="absolute inset-0 flex items-center justify-center z-20 bg-slate-900/80 backdrop-blur-sm">
                   <div className="text-center">
                     <h2 className="text-4xl font-bold mb-6">Pausa</h2>
@@ -123,6 +123,7 @@ export default function ColoreoGrafosGame() {
               isPlaying={gameState.isPlaying}
               isPaused={gameState.isPaused}
               isGameOver={gameState.isGameOver}
+              pausesRemaining={gameState.pausesRemaining}
               soundEnabled={soundEnabled}
               onTogglePause={togglePause}
               onResetGraph={resetGraph}

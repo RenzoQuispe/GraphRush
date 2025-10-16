@@ -1,9 +1,9 @@
 // Lógica principal del juego de coloreo de grafos
 
-import { useState, useCallback} from 'react';
+import { useState, useCallback } from 'react';
 import type { ColorGameState, Particle } from '../types';
 import { useGraphGenerator } from './useGraphGenerator';
-import { GAME_CONFIG, calculatePoints } from '../utils/nivelConfig';
+import { GAME_CONFIG, calculatePoints, MAX_PAUSES } from '../utils/nivelConfig';
 import { useTimer } from '../../../../hooks/useTimer';
 import { isValidColoring } from '../utils/Algoritmos';
 import { useSound } from '../../../../hooks/useSound';
@@ -31,6 +31,7 @@ export function useGraphGame() {
       combo: 0,
       showSuccess: false,
       highScore,
+      pausesRemaining: MAX_PAUSES,
     };
   });
 
@@ -44,7 +45,7 @@ export function useGraphGame() {
     initialTime: GAME_CONFIG.initialTime,
     onTick: (timeMs) => {
       setGameState(prev => ({ ...prev, timeRemaining: timeMs }));
-      
+
       // reproducir tick cada segundo en los últimos 10 segundos
       const currentSecond = Math.floor(timeMs / 1000);
       if (currentSecond <= 10 && currentSecond > 0 && currentSecond !== lastWarningSecond) {
@@ -91,6 +92,7 @@ export function useGraphGame() {
       combo: 0,
       showSuccess: false,
       highScore,
+      pausesRemaining: MAX_PAUSES,
     });
     setLastWarningSecond(-1);
     setIsProcessingCompletion(false);
@@ -101,10 +103,18 @@ export function useGraphGame() {
     if (gameState.isPaused) {
       timer.resume();
     } else {
-      timer.pause();
+      // pausar solo si quedan pausas disponibles
+      if (gameState.pausesRemaining > 0) {
+        timer.pause();
+        setGameState(prev => ({
+          ...prev,
+          pausesRemaining: prev.pausesRemaining - 1 // consumir una pausa
+        }));
+        console.log(`Pausas restantes: ${gameState.pausesRemaining - 1}`);
+      }
     }
     setGameState(prev => ({ ...prev, isPaused: !prev.isPaused }));
-  }, [gameState.isPaused, timer]);
+  }, [gameState.isPaused, gameState.pausesRemaining, timer]);
 
   const colorNode = useCallback((nodeId: string) => {
     if (!gameState.isPlaying || gameState.isPaused || gameState.isGameOver || isProcessingCompletion) return;
@@ -152,7 +162,7 @@ export function useGraphGame() {
             combo: newCombo,
             selectedColor: COLORS.PALETTE[0],
           }));
-          
+
           // agregar tiempo bonus
           timer.addTime(GAME_CONFIG.timeBonus);
           setIsProcessingCompletion(false);

@@ -10,6 +10,8 @@ export const GAME_CONFIG: ColorGameConfig = {
   maxColors: 8,
 };
 
+export const MAX_PAUSES = 5;
+
 export interface LevelConfig {
   minNodes: number;
   maxNodes: number;
