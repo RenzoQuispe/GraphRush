@@ -19,24 +19,24 @@ export default function Home() {
                 Modos de juego en construcción:
             </p>
             <Link
-                to="/juegos/encontrar-camino-mas-corto"
-                className="text-blue-400 hover:text-blue-600 underline"
-            >
-                Encontrar Camino Más Corto
-            </Link>
-            <br />
-            <Link
                 to="/juegos/encontrar-camino"
                 className="text-blue-400 hover:text-blue-600 underline"
             >
-                Encontrar Camino
+                Encontrar un Camino
+            </Link>
+            <br />
+            <Link
+                to="/juegos/encontrar-camino-mas-corto"
+                className="text-blue-400 hover:text-blue-600 underline"
+            >
+                Encontrar el Camino Más Corto
             </Link>
             <br />
             <Link
                 to="/juegos/ciclo-hamiltoniano"
                 className="text-blue-400 hover:text-blue-600 underline"
             >
-                Ciclo Hamiltoniano
+                Encontrar un Ciclo Hamiltoniano
             </Link>
         </div>
     );
