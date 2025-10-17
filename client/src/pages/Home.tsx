@@ -19,13 +19,6 @@ export default function Home() {
                 Modos de juego en construcción:
             </p>
             <Link
-                to="/juegos/encontrar-camino"
-                className="text-blue-400 hover:text-blue-600 underline"
-            >
-                Encontrar un Camino
-            </Link>
-            <br />
-            <Link
                 to="/juegos/encontrar-camino-mas-corto"
                 className="text-blue-400 hover:text-blue-600 underline"
             >

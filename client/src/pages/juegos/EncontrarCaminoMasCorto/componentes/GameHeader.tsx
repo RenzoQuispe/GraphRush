@@ -4,7 +4,7 @@ export function GameHeader() {
             <div className="flex justify-between items-center flex-wrap gap-4">
                 <div>
                     <h1 className="text-3xl font-bold bg-gradient-to-r from-slate-100 to-slate-300/50 bg-clip-text text-transparent">
-                        Encontrar Camino Más corto
+                        Encontrar Camino Más Corto
                     </h1>
                 </div>
             </div>
